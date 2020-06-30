@@ -159,3 +159,26 @@ stages:
               azureSubscription: 'Resource Manager - Tailspin - Space Game'
               appName: '$(WebAppNameStaging)'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+
+- stage: 'Prod'
+  displayName: 'Deploy to the Production environment'
+  dependsOn: Test
+  jobs:
+  - deployment: Staging
+    pool:
+      vmImage: 'ubuntu-18.04'
+    environment: Prod
+    variables:
+    - group: 'Release'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+          - task: AzureWebApp@1
+            displayName: 'Azure App Service Deploy: website'
+            inputs:
+              azureSubscription: 'Resource Manager - Tailspin - Space Game'
+              appName: '$(WebAppNameProd)'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
