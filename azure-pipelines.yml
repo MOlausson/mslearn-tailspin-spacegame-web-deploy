@@ -162,9 +162,9 @@ stages:
 
 - stage: 'Prod'
   displayName: 'Deploy to the Production environment'
-  dependsOn: Test
+  dependsOn: Staging
   jobs:
-  - deployment: Staging
+  - deployment: Deploy
     pool:
       vmImage: 'ubuntu-18.04'
     environment: Prod
